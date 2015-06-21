@@ -34,20 +34,20 @@ class JackpotController extends Controller {
 		// if winner is not "empty", we send out the email.
 		if(!is_null($winner))
 		{
-			// send jackpot email
-			$result = \Mail::send('email.migme_jackpot', [], function($message){
+			$to = 'bryan.ch.h@mig.me';
 
-				// from Achi
-				// to whoever got jackpot ticket
-				$message->from('achi.c@mig.me', 'migme jackpot price');
-				$message->to($winner['email'], $winner['assignee']);
+			\Mail::send('emails.sample_email', [], function($message) use ($winner){
+				$message->from('bryan.ch.h@mig.me', 'Laravel');
+				$message->to($winner['email'], $winner['assignee'])->subject('sample email');
 			});
-
-			var_dump($result);
-			die;
+		}
+		else
+		{
+			return response('no winner at the moment', 200);
 		}
 
-		// if jackpot returns a winner, then we send out an email
+		return response('email has been sent to the winner', 200);
+
 	}
 
 	protected function jiraClientProvider()

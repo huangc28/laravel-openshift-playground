@@ -12,7 +12,9 @@ class JackpotControllerTest extends TestCase
 	 */
 	public function test_request_run_jackpot()
 	{
-		$response = $this->call('GET', '/jackpot-it');
+		$response = $this->call('GET', '/jackpot-it');	
+
+		$this->assertEquals('email has been sent to the winner', $response->getContent());
 	}
 
 	/**
@@ -20,10 +22,9 @@ class JackpotControllerTest extends TestCase
 	 */
 	public function test_email_sending()
 	{
-		// var_dump(Mail::getFacadeRoot());
 		Mail::send('emails.sample_email', [], function($m){
-			$m->from('huangchiheng@gmail.com', 'Laravel');
-			$m->to('huangchiheng@gmail.com', 'Bryan Huang')->subject('sample email');
+			$m->from('bryan.ch.h@mig.me', 'Laravel');
+			$m->to('bryan.ch.h@mig.me', 'Bryan Huang')->subject('sample email');
 		});
 	}
 }
