@@ -15,6 +15,11 @@ Route::get('/', 'WelcomeController@index');
 
 Route::get('home', 'HomeController@index');
 
+Route::get('/jackpot-it', [
+	'as'	=>	'migme.jackpot',
+	'uses'	=>	'JackpotController@getJackpot'
+]);
+
 Route::controllers([
 	'auth' => 'Auth\AuthController',
 	'password' => 'Auth\PasswordController',
