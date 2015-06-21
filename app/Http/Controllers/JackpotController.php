@@ -16,18 +16,21 @@ class JackpotController extends Controller {
 	public function getJackpot()
 	{
 
-		var_dump('dddd');
-		// $jiraClientProvider = $this->jiraClientProvider();
+		// var_dump('dddd');
+		$jiraClientProvider = $this->jiraClientProvider();
 
-		// $jackpot = new DoraemonPrize($jiraClientProvider);
+		$jackpot = new DoraemonPrize($jiraClientProvider);
 
-		// // set jackpot number.
-		// $jackpot->setJackpotNumber(202);
+		// set jackpot number.
+		$jackpot->setJackpotNumber(202);
 
-		// // run the jackpot.
-		// $winner = $jackpot->run();
+		// run the jackpot.
+		$winner = $jackpot->run();
 
-		// // if winner is not "empty", we send out the email.
+		var_dump($winner);
+		die; 
+
+		// if winner is not "empty", we send out the email.
 		// if(!is_null($winner))
 		// {
 		// 	$to = 'bryan.ch.h@mig.me';
