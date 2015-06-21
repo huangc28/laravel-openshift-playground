@@ -13,40 +13,36 @@ class JackpotController extends Controller {
 	const USERNAME = "bryan.ch.h";
 	const PASSWORD = "Huang_0216";
 
-	public function __construct()
-	{
-
-	}
-
 	public function getJackpot()
 	{
 
-		$jiraClientProvider = $this->jiraClientProvider();
+		var_dump('dddd');
+		// $jiraClientProvider = $this->jiraClientProvider();
 
-		$jackpot = new DoraemonPrize($jiraClientProvider);
+		// $jackpot = new DoraemonPrize($jiraClientProvider);
 
-		// set jackpot number.
-		$jackpot->setJackpotNumber(202);
+		// // set jackpot number.
+		// $jackpot->setJackpotNumber(202);
 
-		// run the jackpot.
-		$winner = $jackpot->run();
+		// // run the jackpot.
+		// $winner = $jackpot->run();
 
-		// if winner is not "empty", we send out the email.
-		if(!is_null($winner))
-		{
-			$to = 'bryan.ch.h@mig.me';
+		// // if winner is not "empty", we send out the email.
+		// if(!is_null($winner))
+		// {
+		// 	$to = 'bryan.ch.h@mig.me';
 
-			\Mail::send('emails.sample_email', [], function($message) use ($winner){
-				$message->from('bryan.ch.h@mig.me', 'Laravel');
-				$message->to($winner['email'], $winner['assignee'])->subject('sample email');
-			});
-		}
-		else
-		{
-			return response('no winner at the moment', 200);
-		}
+		// 	\Mail::send('emails.sample_email', [], function($message) use ($winner){
+		// 		$message->from('bryan.ch.h@mig.me', 'Laravel');
+		// 		$message->to($winner['email'], $winner['assignee'])->subject('sample email');
+		// 	});
+		// }
+		// else
+		// {
+		// 	return response('no winner at the moment', 200);
+		// }
 
-		return response('email has been sent to the winner', 200);
+		// return response('email has been sent to the winner', 200);
 
 	}
 
