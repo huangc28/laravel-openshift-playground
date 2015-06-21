@@ -22,13 +22,12 @@ class JackpotController extends Controller {
 		$jackpot = new DoraemonPrize($jiraClientProvider);
 
 		// set jackpot number.
-		$jackpot->setJackpotNumber(202);
+		// @todo we should only send it once, instead of multiple times
+		// 202 should become a variable
+		$jackpot->setJackpotNumber(300);
 
 		// run the jackpot.
 		$winner = $jackpot->run();
-
-		// var_dump($winner);
-		// die; 
 
 		// if winner is not "empty", we send out the email.
 		if(!is_null($winner))
@@ -39,6 +38,7 @@ class JackpotController extends Controller {
 				$message->from('bryan.ch.h@mig.me', 'Laravel');
 				$message->to($winner['email'], $winner['assignee'])->subject('sample email');
 			});
+			// @todo log 
 		}
 		else
 		{
