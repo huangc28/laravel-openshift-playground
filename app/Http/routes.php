@@ -20,6 +20,26 @@ Route::get('/jackpot-it', [
 	'uses'	=>	'JackpotController@getJackpot'
 ]);
 
+
+/*
+|--------------------------------------------------------------------------
+| Yippster
+|--------------------------------------------------------------------------
+| 1. index: Transaction initiation / checkout page
+|
+|
+|
+*/
+Route::get('/yippster-index', [
+	'uses' => 'YippsterController@index',
+	'as'   => 'yippster.index'
+]);
+
+Route::get('/yippster-ext', [
+	'uses' => 'YippsterController@ext',
+	'as'   => 'yippster.ext'
+]);
+
 Route::controllers([
 	'auth' => 'Auth\AuthController',
 	'password' => 'Auth\PasswordController',
