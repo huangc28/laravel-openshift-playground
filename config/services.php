@@ -35,6 +35,7 @@ return [
 	],
 
 	'jira'	=>	[
+		'host'     => 'http://mig-me.atlassian.net',
 		'username' => 'bryan.ch.h',
 		'password' => 'Huang_0216'
 	]

@@ -20,6 +20,10 @@ Route::get('/jackpot-it', [
 	'uses'	=>	'JackpotController@getJackpot'
 ]);
 
+Route::get('/test-route', [
+	'uses'	=>	'TestController@testRoute'
+]);
+
 Route::controllers([
 	'auth' => 'Auth\AuthController',
 	'password' => 'Auth\PasswordController',
