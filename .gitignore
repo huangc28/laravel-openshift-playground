@@ -1,4 +1,4 @@
-.env
-.composer.lock
+/.env
+/composer.lock
 /vendor
 /node_modules
