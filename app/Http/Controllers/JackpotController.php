@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Jira\JiraClient;
 use App\DoraemonPrize;
+use App\JackpotInterface;
 
 class JackpotController extends Controller {
 
@@ -13,10 +14,23 @@ class JackpotController extends Controller {
 	const USERNAME = "bryan.ch.h";
 	const PASSWORD = "Huang_0216";
 
+	/**
+	 * @var App\JackpotInterface
+	 */
+	protected $jackpot;
+
+	public function __construct(JackpotInterface $jackpot)
+	{
+		$this->jackpot = $jackpot;
+	}
+
+	public function test()
+	{
+		var_dump('dd');
+	}
+
 	public function getJackpot()
 	{
-
-		// var_dump('dddd');
 		$jiraClientProvider = $this->jiraClientProvider();
 
 		$jackpot = new DoraemonPrize($jiraClientProvider);
@@ -24,7 +38,7 @@ class JackpotController extends Controller {
 		// set jackpot number.
 		// @todo we should only send it once, instead of multiple times
 		// 202 should become a variable
-		$jackpot->setJackpotNumber(300);
+		$jackpot->setJackpotNumber($jackpotNumber);
 
 		// run the jackpot.
 		$winner = $jackpot->run();

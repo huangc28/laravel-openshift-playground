@@ -34,4 +34,8 @@ return [
 		'secret' => '',
 	],
 
+	'jira'	=>	[
+		'username' => 'bryan.ch.h',
+		'password' => 'Huang_0216'
+	]
 ];
