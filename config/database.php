@@ -51,7 +51,8 @@ return [
 
 		'sqlite' => [
 			'driver'   => 'sqlite',
-			'database' => storage_path().'/database.sqlite3',
+			// 'database' => storage_path().'/database.sqlite3',
+			'database' => ':memory:',	
 			'prefix'   => '',
 		],
 
