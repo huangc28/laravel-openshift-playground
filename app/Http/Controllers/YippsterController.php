@@ -16,8 +16,12 @@ class YippsterController extends Controller {
 	public function index(Request $request)
 	{
 		$request->session()->put('txnid', time());
-		$request->session()->put('surl', 'http://'.$_SERVER["HTTP_HOST"].'/demo/receive.php');
-		$request->session()->put('furl','http://'.$_SERVER["HTTP_HOST"].'/demo/fail.php');
+		// $request->session()->put('surl', 'http://'.$_SERVER["HTTP_HOST"].'/demo/receive.php');
+		// $request->session()->put('furl','http://'.$_SERVER["HTTP_HOST"].'/demo/fail.php');
+		// $request->session()->put('curl','http://'.$_SERVER["HTTP_HOST"].'/demo/cancel.php');
+		$request->session()->put('surl','http://localhost.projectgoth.com/sites/ajax/payment/yippster_payment_request?result=SUCCESS');
+		$request->session()->put('furl','http://localhost.projectgoth.com/sites/ajax/payment/yippster_payment_request?result=FAILED');
+		$request->session()->put('furl','http://localhost.projectgoth.com/sites/ajax/payment/yippster_payment_request?result=CANCEL');
 		$request->session()->put('curl','http://'.$_SERVER["HTTP_HOST"].'/demo/cancel.php');
 		$request->session()->put('firstname','');
 		$request->session()->put('lastname', '');
@@ -52,6 +56,9 @@ class YippsterController extends Controller {
  		$hash = hash('md5',($amount.$merchantID.$merchantkey.$key.$txnid.$surl.$furl.$curl.$firstname.$lastname.$email.$phone.$productinfo));		
  		
 
+ 		// var_export(compact('key', 'txnid', 'surl', 'furl', 'curl', 'firstname', 'lastname', 'email', 'phone', 'productinfo', 'amount', 'merchantID', 'merchantkey', 'hash'));
+ 		// die;
+
  		return view("Yippster.ext", compact(
  			'key',
  			'txnid',
@@ -68,5 +75,11 @@ class YippsterController extends Controller {
  			'merchantkey',
  			'hash'
  		));
+	}
+
+	public function testYippsterRequest()
+	{
+		var_export(\Input::get());
+		// var_dump($_REQUEST);
 	}
 }
