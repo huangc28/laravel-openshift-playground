@@ -14,7 +14,14 @@ class JackpotControllerTest extends TestCase
 	{
 		$response = $this->call('GET', '/jackpot-it');	
 
+
 		$this->assertEquals('email has been sent to the winner', $response->getContent());
+
+		
+		// var_dump(\Schema::hasTable('jira_ticket'));
+		$tickets = \DB::table('jira_ticket')->get();
+		var_dump($tickets);
+		// $this->assertEquals('email has been sent to the winner', $response->getContent());
 	}
 
 	/**
