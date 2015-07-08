@@ -8,6 +8,12 @@ use League\Fractal\Resource\Item;
 class JiraTicketModel extends TestCase
 {
 
+	public function setUp()
+	{
+		parent::setUp();
+		$this->seed();
+	}
+
 	/**
 	 * @todo use data transformer
 	 */
@@ -28,7 +34,11 @@ class JiraTicketModel extends TestCase
 		// $this->assertEquals($resource['ticket_no'], '26584');
 	}
 
-
+	public function test_check_ticket_id_exists_method()
+	{
+		$ticket = JiraTicket::find(1);
+		$this->assertTrue($ticket->checkIdExists('IG-202'));
+	}
 
 	protected function jiraClientProvider()
 	{

@@ -25,10 +25,43 @@ class JackpotController extends Controller
 
 	public function getJackpot()
 	{
+		// retrieve tickets from JiraTicketRepository
+		// all open sprint ticket will be sync to database and be retrieved as a Eloquent Model
+		// $tickets = $this->jiraTicketRepo->getOpenSprintTickets();
+		$tickets = $this->jiraClient->getOpenSprintTickets();
+
+		// Transform ticket data first
+		// @todo I should write a collection for this
+		// fractal transformer sucks... 
+		foreach($tickets as $key => $ticket)
+		{
+			$tickets[$key] = $this->transformer->transform($ticket);
+		}
+
+		// store multiple tickets, automatically sync tickets
+		$this->jiraTicketRepo->saveTickets($tickets);
+
+		// sync "users" with ticket
+		$this->userRepo->syncTickets($tickets);
+		
+
+
+		// retrieve all tickets that has not hit the jackpot "yet"
+		$lotteryTickets = $this->jiraTicketRepo->getLotteryTickets();
+
+	
+		// $this->jiraRepo->saveTicketIfNotExists($tickets);
+		// sync tickets with all assignee 
+		// 1. store unduplicated tickets in database
+		// 2. relate ticket with existed 
+		// $this->jiraTicketSyncer->sync($tickets, User::all());
+
+		// die;
+
 		// set jackpot number.
 		// @todo we should only send it once, instead of multiple times
 		// 202 should become a variable
-		$this->jackpot->setJackpotNumber(202);
+		// $this->jackpot->setJackpotNumber(202);
 
 		// run the jackpot.
 		$winner = $this->jackpot->run();
