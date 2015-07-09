@@ -146,11 +146,6 @@ return [
 		'App\Providers\RouteServiceProvider',
 		'Laracasts\Generators\GeneratorsServiceProvider',
 
-		'App\Providers\JackpotProvider',
-
-		'Laracasts\Generators\GeneratorsServiceProvider',
-
-
 	],
 
 	/*
