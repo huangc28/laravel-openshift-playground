@@ -2,7 +2,8 @@
 
 use Illuminate\Support\ServiceProvider;
 use App\DoraemonPrize;
-use App\JiraClientFactory;
+// use App\JiraClientFactory;
+use Jira\JiraClient;
 use App\CpliakasJiraClientAdapter;
 // use App\JiraCredentials;
 
@@ -32,8 +33,13 @@ class JackpotProvider extends ServiceProvider {
 
 	protected function registerJiraClientInterface()
 	{
+		// var_dump('JiraClientInterface');
+		// die;
+		
 		$credentials = $this->app->config['services']['jira'];
-		$jiraClient = JiraClientFactory::make($credentials['host'], $credentials['username'], $credentials['password']);
+		// $jiraClient = JiraClientFactory::make($credentials['host'], $credentials['username'], $credentials['password']);
+		$jiraClient = new JiraClient($credentials['host']);
+		$jiraClient->login($credentials['username'], $credentials['password']);
 		$this->app->bind('App\JiraClientInterface', function() use ($jiraClient) {
 			return new CpliakasJiraClientAdapter($jiraClient);
 		});
