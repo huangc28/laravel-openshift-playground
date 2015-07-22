@@ -14,6 +14,8 @@ class CreateJiraTicketTable extends Migration {
 	{
 		\Schema::create('jira_ticket', function(Blueprint $table){
 			$table->increments('id'); // incremental id
+			$table->string('assignee')->nullable(); // 
+			$table->string('assignee_jira_id')->nullable(); // stores the user jira unique id 
 			$table->string('ticket_id')->nullable(); // ticket specifc number
 			$table->string('ticket_no')->nullable(); // jira ticket number
 			$table->boolean('jackpot_hit')->default(false); // determine whether it hits 

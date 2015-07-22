@@ -7,13 +7,15 @@ class JiraTicket extends Model {
 	protected $table = 'jira_ticket';
 
 	protected $fillable = array(
-		'ticket_id',
-		'ticket_no',
+		'ticket_id'  ,
+		'ticket_no'  ,
+		'assignee'   , 
+		'jackpot_hit',
 	);
 
 	public function user()
 	{
-		return $this->belongsTo('App\User');
+		return $this->belongsTo('App\User', 'assignee_jira_id', 'mig_id');
 	}
 
 	/**
@@ -45,6 +47,19 @@ class JiraTicket extends Model {
 	 */
 	public function getLotteryTickets()
 	{
-		return $this->where('jackpot_hit', false)->get();
+		return $this->where('jackpot_hit', FALSE)->get();
+	}
+
+	/**
+	 * Mark this ticket as jackpot hitted.
+	 *
+	 * @param void
+	 * @return $this
+	 */
+	public function setIsjackpotHitted()
+	{
+		$this->jackpot_hit = TRUE;
+
+		return $this;
 	}
 }

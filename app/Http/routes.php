@@ -15,11 +15,23 @@ Route::get('/', 'WelcomeController@index');
 
 Route::get('home', 'HomeController@index');
 
+
+// Route::get('/jackpot-it', function(){
+// 	var_dump('ddd');
+// });
+
 Route::get('/jackpot-it', [
 	'as'	=>	'migme.jackpot',
 	'uses'	=>	'JackpotController@getJackpot'
 ]);
 
+// Route::get('/jackpot-it-test', function(){
+// 	var_dump('ddd');
+// });
+
+// Route::get('/jackpot-it-test', [
+// 	'uses'	=> 'JackpotController@testRoute'
+// ]);
 
 /*
 |--------------------------------------------------------------------------

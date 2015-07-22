@@ -5,7 +5,10 @@ class JiraTicketTest extends TestCase
 {
 	public function setUp()
 	{
+		// var_dump($_ENV);
+		// die;
 		parent::setUp();
+		$this->seed();
 	}
 
 	public function test_get_ticket_by_jira_id()
@@ -28,5 +31,17 @@ class JiraTicketTest extends TestCase
 		$lotteryTickets = $ticket->getLotteryTickets();
 		$this->assertNotTrue($lotteryTickets[0]->jackpot_hit);
 		
+	}
+
+	public function test_get_tickets_by_id()
+	{
+		$ticketIds = array(
+			'100', 
+			'102',
+			'104'
+		);
+		$ticket = new JiraTicket;
+		$tickets = $ticket->whereIn('ticket_id', $ticketIds);
+		var_dump($tickets);
 	}
 }

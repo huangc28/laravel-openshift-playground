@@ -17,6 +17,7 @@ class ConfigServiceProvider extends ServiceProvider {
 	{
 		config([
 			//
+			'config/jiraJackpot.php', 
 		]);
 	}
 

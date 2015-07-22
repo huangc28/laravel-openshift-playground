@@ -32,12 +32,34 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 	protected $hidden = ['password', 'remember_token'];
 
 	/**
-	 * A user has many JiraTickets
+	 * A user has many JiraTickets.
 	 *
 	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
 	 */
 	public function jiraTicket()
 	{
-		return $this->hasMany('App\JiraTicket');
+		return $this->hasMany('App\JiraTicket', 'assignee_jira_id', 'mig_id');
+	}
+
+	/**
+	 * Check if jira user exists.
+	 *
+	 * @todo should be written in trait.
+	 * @param string $user
+	 * @return boolean
+	 */
+	public function hasJiraUser($jiraUser)
+	{
+		return $this->where('mig_id', $jiraUser)->exists();
+	}
+
+	/**
+	 * Find user by Jira id 
+	 *
+	 * @param string $jiraId
+	 */
+	public function getByJiraId($jiraId)
+	{
+		return $this->where('mig_id', $jiraId)->first();
 	}
 }

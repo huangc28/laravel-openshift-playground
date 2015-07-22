@@ -9,6 +9,9 @@ use App\DoraemonPrize;
 use App\JackpotInterface;
 use App\JiraClientInterface;
 use App\Transformers\JiraTicketTransformer;
+use App\JiraTicketRepository;
+use App\JiraUserRepository;
+use App\JiraLotteryBox;
 
 class JackpotController extends Controller {
 
@@ -23,22 +26,34 @@ class JackpotController extends Controller {
 	protected $jiraClient;
 
 	/**
-	 * @var App\User
+	 * @var App\JiraTicketRepository
 	 */
-	protected $user;
+	protected $jiraRepo;
+
+	/**
+	 * @var App\JiraUserRepository
+	 */
+	protected $jiraUserRepo;
 
 	/**
 	 * @param App\JackpotInterface $jackpot
 	 */
-	public function __construct(JiraClientInterface $jiraClient, JiraTicketTransformer $transformer)
+	public function __construct(
+									JiraClientInterface $jiraClient, 
+									JiraTicketTransformer $transformer, 
+									JiraTicketRepository $jiraRepo,
+									JiraUserRepository $jiraUserRepo
+								)
 	{
-		$this->jiraClient = $jiraClient;
-		$this->transformer = $transformer;
-		// $this->jiraTicketSyncer = $jiraTicketSyncer;
+		$this->jiraClient   = $jiraClient;
+		$this->transformer  = $transformer;
+		$this->jiraRepo     = $jiraRepo;
+		$this->jiraUserRepo = $jiraUserRepo; 
 	}
 
 	public function getJackpot()
 	{
+
 		// retrieve tickets from JiraTicketRepository
 		// all open sprint ticket will be sync to database and be retrieved as a Eloquent Model
 		// $tickets = $this->jiraTicketRepo->getOpenSprintTickets();
@@ -52,68 +67,55 @@ class JackpotController extends Controller {
 			$tickets[$key] = $this->transformer->transform($ticket);
 		}
 
-		// store multiple tickets, automatically sync tickets
-		$this->jiraTicketRepo->saveTickets($tickets);
+		// store multiple tickets.
+		$tickets = $this->jiraRepo->saveTickets($tickets, TRUE);
 
 		// sync the relation between "tickets" and "users"
-		$this->userRepo->syncTickets($tickets);
-		
+		$this->jiraUserRepo->syncTickets($tickets);
 
+		$lotteryTickets = $this->jiraRepo->getLotteryTickets()->flatten()->all();
 
-		// retrieve all tickets that has not hit the jackpot "yet"
-		$lotteryTickets = $this->jiraTicketRepo->getLotteryTickets();
+		$lotteryBox = new JiraLotteryBox(
+			$lotteryTickets
+		);
 
-	
-		// $this->jiraRepo->saveTicketIfNotExists($tickets);
-		// sync tickets with all assignee 
-		// 1. store unduplicated tickets in database
-		// 2. relate ticket with existed 
-		// $this->jiraTicketSyncer->sync($tickets, User::all());
+		// draw one ticket out
+		$jackpotTicket = $lotteryBox
+							->setJackpotNumber(\Config::get('jiraJackpot')['jackpotNumber'])
+							->matchJackpot();
 
-		// die;
+		var_dump($jackpotTicket);
+		die;
+		if(!is_null($jackpotTicket))
+		{
+			$winner = $jackpotTicket->user;
 
-
-		// set jackpot number.
-		// @todo we should only send it once, instead of multiple times
-		// 202 should become a variable
-
-
-		// run the jackpot.
-		$winner = $jackpot->run();
-
-		// $this->jackpot->setJackpotNumber(202);
-
-		// what does a jackpot do? 
-		// passed in list of jira tickets
-		// pick the one that was matching the selected ticket number.
-		// $jackpotTicket = $this->jackpot->setNominateTickets($lists)->pick(JiraTicket::find(202));
-			
-		// find the related jira ticket owner
-			
-		// $this->jackpot
-		// 	->setJackpotNumber(202)
-		// 	->checkFromTickets($list);
-
-		// $winner = $this->jackpot->run();
+			var_dump($winner);
+			die;
+			\Mail::send('emails.migme_jackpot', [], function($message) use ($winner){
+				$message->from('bryan.ch.h@mig.me', 'Laravel');
+				$message->to($winner->email, $winner->mig_id)->subject('sample email');
+			});
+		}
 
 
 		// if winner is not "empty", we send out the email.
-		if(!is_null($winner))
-		{
-			$to = 'bryan.ch.h@mig.me';
+		// if(!is_null($winner))
+		// {
+		// 	$to = 'bryan.ch.h@mig.me';
 
-			\Mail::send('emails.migme_jackpot', [], function($message) use ($winner){
-				$message->from('bryan.ch.h@mig.me', 'Laravel');
-				$message->to($winner['email'], $winner['assignee'])->subject('sample email');
-			});
-			// @todo log 
-		}
-		else
-		{
-			return response('no winner at the moment', 200);
-		}
+		// 	\Mail::send('emails.migme_jackpot', [], function($message) use ($winner){
+		// 		$message->from('bryan.ch.h@mig.me', 'Laravel');
+		// 		$message->to($winner['email'], $winner['assignee'])->subject('sample email');
+		// 	});
+		// 	// @todo log 
+		// }
+		// else
+		// {
+		// 	return response('no winner at the moment', 200);
+		// }
 
-		return response('email has been sent to the winner', 200);
+		// return response('email has been sent to the winner', 200);
 
 	}
 
