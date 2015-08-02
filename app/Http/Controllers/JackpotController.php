@@ -1,5 +1,7 @@
 <?php namespace App\Http\Controllers;
 
+use Mail;
+use Input;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
@@ -53,7 +55,6 @@ class JackpotController extends Controller {
 
 	public function getJackpot()
 	{
-
 		// retrieve tickets from JiraTicketRepository
 		// all open sprint ticket will be sync to database and be retrieved as a Eloquent Model
 		// $tickets = $this->jiraTicketRepo->getOpenSprintTickets();
@@ -73,73 +74,93 @@ class JackpotController extends Controller {
 		// sync the relation between "tickets" and "users"
 		$this->jiraUserRepo->syncTickets($tickets);
 
-		$lotteryTickets = $this->jiraRepo->getLotteryTickets()->flatten()->all();
+		$lotteryTickets = $this->jiraRepo
+									->getLotteryTickets()
+									->flatten()
+									->all();
 
+		// extract the dependecy
 		$lotteryBox = new JiraLotteryBox(
 			$lotteryTickets
 		);
 
+		$jackpotNumber = (Input::has('jackpotNum')) ? Input::get('jackpotNum') : \Config::get('jiraJackpot')['jackpotNumber'];
+
 		// draw one ticket out
 		$jackpotTicket = $lotteryBox
-							->setJackpotNumber(\Config::get('jiraJackpot')['jackpotNumber'])
+							->setJackpotNumber($jackpotNumber)
 							->matchJackpot();
 
-		var_dump($jackpotTicket);
-		die;
+		// if jackpot ticket is found, we found a related user.
 		if(!is_null($jackpotTicket))
 		{
 			$winner = $jackpotTicket->user;
 
-			var_dump($winner);
-			die;
-			\Mail::send('emails.migme_jackpot', [], function($message) use ($winner){
-				$message->from('bryan.ch.h@mig.me', 'Laravel');
-				$message->to($winner->email, $winner->mig_id)->subject('sample email');
-			});
-		}
+			try
+			{
+				$result = \Mail::send('emails.migme_jackpot', [], function($message) use ($winner){
+					$message->from('achi.c@mig.me', 'Achi Chen');
+					$message->to($winner->email, $winner->mig_id)->subject('Congratulation! you just hit the jira jackpot');
+				});
 
+				return $this->sendOkResponse($result, $winner->name, $winner->email);
+			}
+			catch(\Exception $e)
+			{
+				return $this->sendFailResponse($e->getMessage());
+			}
 
-		// if winner is not "empty", we send out the email.
-		// if(!is_null($winner))
-		// {
-		// 	$to = 'bryan.ch.h@mig.me';
-
-		// 	\Mail::send('emails.migme_jackpot', [], function($message) use ($winner){
-		// 		$message->from('bryan.ch.h@mig.me', 'Laravel');
-		// 		$message->to($winner['email'], $winner['assignee'])->subject('sample email');
-		// 	});
-		// 	// @todo log 
-		// }
-		// else
-		// {
-		// 	return response('no winner at the moment', 200);
-		// }
-
-		// return response('email has been sent to the winner', 200);
-
-	}
-
-	protected function jiraClientProvider()
-	{
-		$jira = new JiraClient(self::HOST);
-		$jira->login(self::USERNAME, self::PASSWORD);
-		return $jira;
-	}
-
-	/**
-	 * Retrieve email of the jackpot candidate
-	 *
-	 * @param string $candidate
-	 */
-	protected function getJackpotEmail($candidate)
-	{
-		if(array_key_exists($candidate, $this->candidates))
-		{
-			return $this->candidates[$candidate]['email'];
 		}
 		else
 		{
-			throw new \Exception("Candidate does not exist");
-		}	
+			return $this->sendFailResponse('Jira ticket not found');
+		}
+	}
+
+	/**
+	 * Send ok response.
+	 * 
+	 * [  
+	 *    'result'   => 1,
+	 *    'name' => 'bryan.ch.h', // name
+	 *    'email'    => 'bryan.ch.h@mig.me'
+	 * ]
+	 *
+	 * @param int $result
+	 * @param string $name
+	 * @param string $email
+	 */
+	protected function sendOkResponse($name, $email)
+	{
+		// compose parameters into array, convert it into json
+		$result_arr = [
+			'result' => true,
+			'name'   => $name,
+			'email'  => $email
+		];
+
+		// return a response 
+		return response()->json($result_arr);
+	}
+
+	/**
+	 * Send fail response
+	 *
+	 * [
+	 *   'result' => 'fail'
+	 *   'reason' => ...
+	 * ]
+	 *
+	 * @param string $message
+	 * @return response
+	 */
+	protected function sendFailResponse($message)
+	{
+		$result_arr = [
+			'result' => false,
+			'reason' => $message
+		];
+
+		return response()->json($result_arr);
 	}
 }
