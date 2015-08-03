@@ -14,7 +14,6 @@ class JackpotControllerTest extends TestCase
 
 	public function tearDown()
 	{
-		parent::tearDown();
 		Artisan::call('migrate:refresh');
 	}
 
@@ -27,9 +26,9 @@ class JackpotControllerTest extends TestCase
 	{
 		$response = $this->call('GET', '/jackpot-it');	
 
-		$response_json = json_decode($response->getContent());
+		$response_json = json_decode($response->getContent(), TRUE);
 
-		$this->assertTrue($response_json->result);
+		$this->assertTrue($response_json['result']);
 	}
 
 	public function test_request_test_route()
