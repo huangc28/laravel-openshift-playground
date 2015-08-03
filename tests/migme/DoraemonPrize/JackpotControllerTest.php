@@ -8,34 +8,28 @@ class JackpotControllerTest extends TestCase
 	public function setUp()
 	{
 		parent::setUp();
-		DB::table('jira_ticket')->truncate();
-		DB::table('users')->truncate();
+		Artisan::call('migrate');
 		$this->seed('UserTableSeeder');
 	}
 
 	public function tearDown()
 	{
-		DB::table('jira_ticket')->truncate();
-		DB::table('users')->truncate();
+		parent::tearDown();
+		Artisan::call('migrate:refresh');
 	}
 
 	/**
 	 * Try request 'jackpot-it' url and test response.
+	 *
+	 * Assert that the email has been sent
 	 */
 	public function test_request_run_jackpot()
 	{
 		$response = $this->call('GET', '/jackpot-it');	
 
-		var_dump($response->getContent());
-		// die;
+		$response_json = json_decode($response->getContent());
 
-		// $this->assertEquals('email has been sent to the winner', $response->getContent());
-
-		
-		// var_dump(\Schema::hasTable('jira_ticket'));
-		// $tickets = \DB::table('jira_ticket')->get();
-		// var_dump($tickets);
-		// $this->assertEquals('email has been sent to the winner', $response->getContent());
+		$this->assertTrue($response_json->result);
 	}
 
 	public function test_request_test_route()
