@@ -20,6 +20,7 @@ class CreateJiraTicketTable extends Migration {
 			$table->string('ticket_no')->nullable(); // jira ticket number
 			$table->boolean('jackpot_hit')->default(false); // determine whether it hits 
 			$table->timestamps();
+		});
 	}
 
 	/**
