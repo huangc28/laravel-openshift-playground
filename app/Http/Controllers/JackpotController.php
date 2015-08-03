@@ -4,7 +4,6 @@ use Mail;
 use Input;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
-
 use Illuminate\Http\Request;
 use Jira\JiraClient;
 use App\DoraemonPrize;
@@ -15,12 +14,8 @@ use App\JiraTicketRepository;
 use App\JiraUserRepository;
 use App\JiraLotteryBox;
 
-class JackpotController extends Controller {
-
-	/**
-	 * @var App\Transformers\JiraTicketTransformers
-	 */
-	protected $transformer;
+class JackpotController extends Controller 
+{
 
 	/**
 	 * @var App\JiraClientInterface

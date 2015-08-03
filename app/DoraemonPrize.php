@@ -1,7 +1,9 @@
 <?php namespace App;
 
+use App\JackpotInterface;
 use Jira\JiraClient;
-class DoraemonPrize
+
+class DoraemonPrize implements JackpotInterface
 {
 	protected $jackpot_number;
 	protected $jira_client;

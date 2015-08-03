@@ -33,9 +33,6 @@ class JackpotProvider extends ServiceProvider {
 
 	protected function registerJiraClientInterface()
 	{
-		// var_dump(get_class($this->app));
-		// die;
-		
 		$credentials = $this->app->config['services']['jira'];
 		// $jiraClient = JiraClientFactory::make($credentials['host'], $credentials['username'], $credentials['password']);
 		$jiraClient = new JiraClient($credentials['host']);

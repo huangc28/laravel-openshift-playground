@@ -25,14 +25,6 @@ Route::get('/jackpot-it', [
 	'uses'	=>	'JackpotController@getJackpot'
 ]);
 
-// Route::get('/jackpot-it-test', function(){
-// 	var_dump('ddd');
-// });
-
-// Route::get('/jackpot-it-test', [
-// 	'uses'	=> 'JackpotController@testRoute'
-// ]);
-
 /*
 |--------------------------------------------------------------------------
 | Yippster
@@ -93,7 +85,6 @@ Route::post('/yippster-mock/cancel', [
 	'uses' => 'YippsterMockServicesController@cancel',
 	'as'   => 'Yippster.cancel'
 ]);
-
 
 Route::controllers([
 	'auth' => 'Auth\AuthController',

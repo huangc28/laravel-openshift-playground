@@ -34,11 +34,12 @@ return [
 		'secret' => '',
 	],
 
+
 	/*============================
 		Jira Client Credentials
 	==============================*/
-	'jira' => [
-		'host'     => 'https://mig-me.atlassian.net',
+	'jira'	=>	[
+		'host'     => 'http://mig-me.atlassian.net',
 		'username' => 'bryan.ch.h',
 		'password' => 'Huang_0216'
 	]
