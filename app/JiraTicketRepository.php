@@ -28,8 +28,8 @@ class JiraTicketRepository
 	 */
 	public function saveTickets($tickets, $return=false)
 	{	
-		// var_dump($tickets);	
-		// die;
+		$ticketIds = array();
+
 		foreach($tickets as $ticketKey => $ticket) 
 		{
 			if(!$this->jiraTicket->checkIdExists($ticketKey))
@@ -37,9 +37,9 @@ class JiraTicketRepository
 				$result = $this->jiraTicket->newInstance($ticket)->save();
 
 				if(!$result) return $result;
-
-				$ticketIds[] = $ticket['ticket_id'];
 			}
+
+			$ticketIds[] = $ticket['ticket_id'];
 		}
 
 		// if result is true and return is set to true, that means user wants to retrieve tickets just saved.
@@ -72,6 +72,6 @@ class JiraTicketRepository
 	 */
 	public function getLotteryTickets()
 	{
-		return $this->jiraTicket->where('jackpot_hit', FALSE)->get();
+		return $this->jiraTicket->where('jackpot_hit', false)->get();
 	}
 }
